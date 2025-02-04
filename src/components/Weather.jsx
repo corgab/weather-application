@@ -1,8 +1,9 @@
 import search from '../assets/search.svg';
 
-function Weather({ weatherIcon, weatherText }) {
+function Weather({ weatherIcon, weatherText, weatherName }) {
   return (
     <div>
+      <h2>{weatherName}</h2>
       <img
         src={weatherIcon ? 'https://' + weatherIcon : search}
         alt={weatherText}

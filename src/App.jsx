@@ -9,7 +9,9 @@ function App() {
   const [city, setCity] = useState('');
   const [weatherIcon, setWeatherIcon] = useState('');
   const [weatherText, setWeatherText] = useState('');
+  const [weatherName, setWeatherName] = useState('');
   const [loading, setLoading] = useState(null);
+  const [error, setError] = useState(false);
 
   const baseURL = 'http://api.weatherapi.com/v1';
   const key = import.meta.env.VITE_WEATHER_KEY;
@@ -17,6 +19,7 @@ function App() {
   const fetchWeather = () => {
     if (!city) return;
     setLoading(true);
+    setError(false);
     axios
       .get(`${baseURL}/current.json`, {
         params: {
@@ -28,9 +31,12 @@ function App() {
       .then((res) => {
         setWeatherIcon(res.data.current.condition.icon);
         setWeatherText(res.data.current.condition.text);
+        setWeatherName(res.data.location.name);
+        // console.log(res.data.location.name);
       })
       .catch((e) => {
         console.error(e);
+        setError(true);
       })
       .finally(() => setLoading(false));
   };
@@ -56,11 +62,19 @@ function App() {
         <h1 className="mb-4">Previsioni Meteo</h1>
         <Search setCity={handleCityChange} />
         <div className="mt-4">
-          {loading ? (
-            <strong roleName="status">Caricamento...</strong>
-          ) : (
-            <Weather weatherIcon={weatherIcon} weatherText={weatherText} />
-          )}
+          <h3>
+            {loading ? (
+              <strong role="status">Caricamento...</strong>
+            ) : error ? (
+              'Città non trovata'
+            ) : (
+              <Weather
+                weatherIcon={weatherIcon}
+                weatherText={weatherText}
+                weatherName={weatherName}
+              />
+            )}
+          </h3>
         </div>
       </div>
     </div>
